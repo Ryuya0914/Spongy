@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2078438340777538164}
   - component: {fileID: 4631600113746696462}
   - component: {fileID: 9063081721018699344}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: yuka
   m_TagString: Ground
   m_Icon: {fileID: 0}
