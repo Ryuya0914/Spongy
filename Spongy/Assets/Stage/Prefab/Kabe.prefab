@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 4935903727775098127}
   - component: {fileID: 5868386759036297038}
   - component: {fileID: 7701694722192477445}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: kabe (2)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 1163725949049862466}
   - component: {fileID: 935213198556312319}
   - component: {fileID: 6531720871545993465}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: kabe (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5471027589552938874}
   - component: {fileID: 1582200885067893318}
   - component: {fileID: 6445770659890823128}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: maruyuka
   m_TagString: Ground
   m_Icon: {fileID: 0}
