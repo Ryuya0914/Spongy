@@ -11,7 +11,7 @@ public class movesample2 : MonoBehaviour
 
 
 
-    [SerializeField,Header("管理フラグ")] bool Left, Right, Under;
+    [SerializeField,Header("管理フラグ")] bool Left, Right, Under,Jump;
 
 
     float xSpeed;
@@ -22,12 +22,16 @@ public class movesample2 : MonoBehaviour
         //------------移動処理----------//
         if (Input.GetKey(KeyCode.A) && !Right)
         {
+            transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
             xSpeed = -Speed;
+            Right = false;
             Left = true;
         }
         else if (Input.GetKey(KeyCode.D) && !Left)
         {
+            transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
             xSpeed = Speed;
+            Left = false;
             Right = true;
         }
         else
@@ -43,10 +47,10 @@ public class movesample2 : MonoBehaviour
 
 
         //-----------左右反転----------//
-        if (Input.GetKeyDown(KeyCode.A) && !Right)//左
-            transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
-        if (Input.GetKeyDown(KeyCode.D) && !Left)//右
-            transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
+        //if (Input.GetKeyDown(KeyCode.A) && !Right)//左
+        //    transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
+        //if (Input.GetKeyDown(KeyCode.D) && !Left)//右
+        //    transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
         //-----------------------------//
 
 
@@ -80,7 +84,11 @@ public class movesample2 : MonoBehaviour
 
 
         //-------ジャンプ--------//
-        if (Input.GetKeyDown(KeyCode.Space)) rb.AddForce(Vector3.up * Speed * 3 / 2, ForceMode2D.Impulse);
+        if (Input.GetKeyDown(KeyCode.Space) && Jump)
+        {
+            Jump = false;
+            rb.AddForce(Vector3.up * Speed * 3 / 2, ForceMode2D.Impulse);
+        }
         //--------------------//
 
 
@@ -94,7 +102,8 @@ public class movesample2 : MonoBehaviour
     void Boost()
     {
 
-        if (Hydrated % 4 == 0) Speed += 0.5f;//移動量を戻す
+
+        if (Hydrated % 4 == 0 && Speed < 5) Speed += 0.5f;//移動量を戻す
 
 
 
@@ -118,6 +127,13 @@ public class movesample2 : MonoBehaviour
         if (col.gameObject.CompareTag("Water"))
             StartCoroutine(Soak());
         //-----------------------------------------------//
+
+
+    }
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("Ground"))
+            Jump = true;
     }
 
 
