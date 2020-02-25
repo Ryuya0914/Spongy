@@ -6,20 +6,29 @@ using UnityEngine;
 public class movesample : MonoBehaviour
 {
     [SerializeField, Header("楽するため")] Rigidbody2D rb;
-    [SerializeField, Header("移動速度上昇（乗算）")] float Move_Rate;
+    [SerializeField, Header("移動速度上昇（乗算）")] int Move_Rate;
+    [SerializeField, Header("含水量")] int Hydrated;
     [Header("移動管理フラグ")]
-    [SerializeField,] bool Left, Right, Jump, Under;
+    [SerializeField] bool Left, Right, Jump, Under, Burst;
     void Update()
     {
-        //----------移動フラグ---------//
-        if (Input.GetKey(KeyCode.A))//左
-            Left = true;
-        else Left = false;
-        if (Input.GetKey(KeyCode.D))//右
-            Right = true;
-        else Right = false;
-        //-----------------------------//
-
+        if (!Burst)
+        {
+            //----------移動フラグ---------//
+            if (Input.GetKey(KeyCode.A))//左
+            {
+                rb.MovePosition(transform.position + Move_Rate / 10 * transform.right * Time.deltaTime);
+                Left = true;
+            }
+            else Left = false;
+            if (Input.GetKey(KeyCode.D))//右
+            {
+                rb.MovePosition(transform.position + Move_Rate / 10 * transform.right * Time.deltaTime);
+                Right = true;
+            }
+            else Right = false;
+            //-----------------------------//
+        }
 
 
         //-----------左右反転----------//
@@ -39,15 +48,24 @@ public class movesample : MonoBehaviour
         {
             transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 0, 1));
             Under = false;
-        } 
+        }
         //------------------------------------------//
+
+
+
+        
 
 
 
 
         //------------加速システム---------//
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.B) && Hydrated >= 20)
+        {
+            Hydrated -= 20;
+            if(Move_Rate<100)Move_Rate += 20;
             Boost();//実行
+            Burst = true;
+        }
         //--------------------------------//
 
 
@@ -66,15 +84,9 @@ public class movesample : MonoBehaviour
     //-------------------移動処理部分--------------------//
     void FixedUpdate()
     {
-        //右に動くよ
-        if (Right)
-            rb.MovePosition(transform.position + Move_Rate * transform.right * Time.deltaTime);
-        //左に動くよ
-        if (Left)
-            rb.MovePosition(transform.position + Move_Rate * transform.right * Time.deltaTime);
         //ジャンプするよ
         if (Jump)
-            rb.AddForce(Vector3.up * Move_Rate * 3,ForceMode2D.Impulse);
+            rb.AddForce(Vector3.up * Move_Rate/10, ForceMode2D.Impulse);
     }
     //----------------------------------------------------//
 
@@ -87,12 +99,23 @@ public class movesample : MonoBehaviour
     void Boost()
     {
         if (Right)//右
-            rb.AddForce(Vector3.right * Move_Rate * 3,ForceMode2D.Impulse);
+            rb.AddForce(Vector3.right * 10, ForceMode2D.Impulse);
         if (Left)//左
-            rb.AddForce(-Vector3.right * Move_Rate * 3, ForceMode2D.Impulse);
+            rb.AddForce(-Vector3.right * 10, ForceMode2D.Impulse);
         if (Under)//下
-            rb.AddForce(Vector3.up * Move_Rate * 3, ForceMode2D.Impulse);
+            rb.AddForce(Vector3.up * 7, ForceMode2D.Impulse);
     }
     //-------------------------------------------------------------//
+
+
+
+
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Water"))
+        { }
+
+    }
 
 }
