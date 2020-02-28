@@ -182,7 +182,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &9077942608198396078
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -223,8 +223,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 607675826915279727}
   Speed: 5
+  Current: 0
   Hydrated: 0
   Left: 0
   Right: 0
   Under: 0
   Jump: 0
+  Soak_On: 0
+  Water: 0

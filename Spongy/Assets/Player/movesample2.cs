@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class movesample2 : MonoBehaviour
 {
-    [SerializeField] Rigidbody2D rb;
-    [SerializeField,Header("移動量(乗算)")] float Speed;
-    float Current;
+    [SerializeField,Header("楽するため")] Rigidbody2D rb;
+    [SerializeField, Header("移動量(乗算)")] float Speed;
+    [SerializeField,Header("水流時移動抵抗量")]float Current;
     [SerializeField, Header("含水量")] int Hydrated;
-
-
-
-    [SerializeField,Header("管理フラグ")] bool Left, Right, Under,Jump;
-
-
-    float xSpeed;
+    [SerializeField, Header("向き管理")] bool Left, Right, Under;
+    [SerializeField, Header("ジャンプ管理")] bool Jump;
+    [SerializeField, Header("ジャンプ高さ調整(減算)")] float Jump_Height;
+    [SerializeField, Header("吸水管理")] bool Soak_On, Water;
+    [HideInInspector] float xSpeed;
 
     void Update()
     {
@@ -46,12 +44,6 @@ public class movesample2 : MonoBehaviour
         //------------------------------//
 
 
-        //-----------左右反転----------//
-        //if (Input.GetKeyDown(KeyCode.A) && !Right)//左
-        //    transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
-        //if (Input.GetKeyDown(KeyCode.D) && !Left)//右
-        //    transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
-        //-----------------------------//
 
 
 
@@ -87,13 +79,21 @@ public class movesample2 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Jump)
         {
             Jump = false;
-            rb.AddForce(Vector3.up * Speed * 3 / 2, ForceMode2D.Impulse);
+            rb.AddForce(Vector3.up * (Speed * 3-Jump_Height), ForceMode2D.Impulse);
         }
         //--------------------//
 
+        
 
 
-
+        //-----------水中にいるとき段々吸水---------------//
+        if (Input.GetKeyDown(KeyCode.P) && Water&&Soak_On)
+        {
+            StartCoroutine(Soak());
+            Soak_On = false;
+        }
+        if (Input.GetKeyUp(KeyCode.P)) Soak_On = true;
+        //------------------------------------------------//
 
 
     }
@@ -123,17 +123,25 @@ public class movesample2 : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        //-----------水を含む処理の開始地点--------------//
+
+        //----------------水中かどうか--------------//
         if (col.gameObject.CompareTag("Water"))
-            StartCoroutine(Soak());
-        //-----------------------------------------------//
-
-
+            Water = true;
+        //-----------------------------------------//
     }
     void OnCollisionEnter2D(Collision2D col)
     {
+
+
+
+        //--------------接地しているか-------------//
         if (col.gameObject.CompareTag("Ground"))
             Jump = true;
+        //-----------------------------------------//
+
+
+
+
     }
 
 
@@ -141,29 +149,36 @@ public class movesample2 : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D col)
     {
-        //-----------水を含む処理の終了地点--------------//
-        if (col.gameObject.CompareTag("Water"))
-            StopCoroutine(Soak());
-        //-----------------------------------------------//
-        if (col.gameObject.CompareTag("Left_Current")|| col.gameObject.CompareTag("Right_Current"))
-        {
-            Current = 0;
-        }
 
+
+
+
+        //--------水流から離れたら移動速度が戻る------//
+        if (col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current"))
+            Current = 0;
+        //--------------------------------------------//
+
+
+
+
+
+
+        //-----------水中かどうか-------------//
+        if (col.gameObject.CompareTag("Water"))
+            Water = false;
+        //------------------------------------//
     }
 
 
     void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject.CompareTag("Left_Current"))
-        {
-            Current = 2;
-        }
-        if (col.gameObject.CompareTag("Right_Current"))
-        {
-            Current = -2;
-        }
 
+        //--------------------水流に流されるやつ-------------------//
+        if (col.gameObject.CompareTag("Left_Current"))//左
+            Current = 2;
+        if (col.gameObject.CompareTag("Right_Current"))//右
+            Current = -2;
+        //----------------------------------------------------------//
     }
 
 
@@ -180,9 +195,11 @@ public class movesample2 : MonoBehaviour
         {
             Hydrated += 5;//だんだん吸水
             if (Hydrated % 4 == 0) Speed -= 0.5f;//だんだん減速
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f);
+            if (Soak_On) break;
         }
-        StopCoroutine(Soak());
+
+        yield break;
     }
     //----------------------------------------------//
 }
