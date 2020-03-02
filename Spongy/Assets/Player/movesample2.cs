@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class movesample2 : MonoBehaviour
 {
@@ -11,7 +12,8 @@ public class movesample2 : MonoBehaviour
     [SerializeField, Header("向き管理")] bool Left, Right, Under;
     [SerializeField, Header("ジャンプ管理")] bool Jump;
     [SerializeField, Header("ジャンプ高さ調整(減算)")] float Jump_Height;
-    [SerializeField, Header("吸水管理")] bool Soak_On, Water;
+    [SerializeField, Header("吸水管理")] bool Soak_On, Soak_Cancel, Water;
+    [SerializeField, Header("UI")] Image Meter;
     [HideInInspector] float xSpeed;
 
     void Update()
@@ -20,14 +22,14 @@ public class movesample2 : MonoBehaviour
         //------------移動処理----------//
         if (Input.GetKey(KeyCode.A) && !Right)
         {
-            transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
+            if(!Under) transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
             xSpeed = -Speed;
             Right = false;
             Left = true;
         }
         else if (Input.GetKey(KeyCode.D) && !Left)
         {
-            transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
+            if(!Under) transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
             xSpeed = Speed;
             Left = false;
             Right = true;
@@ -96,6 +98,11 @@ public class movesample2 : MonoBehaviour
         //------------------------------------------------//
 
 
+        //-----------含水量のUIを更新---------------------//
+        Meter.fillAmount = Hydrated / 100f;
+        //------------------------------------------------//
+
+
     }
 
     //-------------------加速システム処理部-----------------------//
@@ -114,36 +121,27 @@ public class movesample2 : MonoBehaviour
         if (Under)//下
         {
             Under = false;
-            rb.AddForce(Vector3.up * 10, ForceMode2D.Impulse);
+            rb.AddForce(Vector3.up * 15, ForceMode2D.Impulse);
         }
     }
     //-------------------------------------------------------------//
 
 
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
+    void OnTriggerEnter2D(Collider2D col) {
 
         //----------------水中かどうか--------------//
-        if (col.gameObject.CompareTag("Water"))
-            Water = true;
+        if(col.gameObject.CompareTag("Water"))
+            Soak_Cancel = false;
         //-----------------------------------------//
-    }
-    void OnCollisionEnter2D(Collision2D col)
-    {
-
-
 
         //--------------接地しているか-------------//
-        if (col.gameObject.CompareTag("Ground"))
+        if(col.gameObject.CompareTag("TopGround"))
             Jump = true;
         //-----------------------------------------//
 
 
-
-
     }
-
 
 
 
@@ -164,17 +162,24 @@ public class movesample2 : MonoBehaviour
 
 
         //-----------水中かどうか-------------//
-        if (col.gameObject.CompareTag("Water"))
+        if(col.gameObject.CompareTag("Water")) {
             Water = false;
+            Soak_Cancel = true;
+        }
         //------------------------------------//
     }
 
 
     void OnTriggerStay2D(Collider2D col)
     {
+        //----------------水中かどうか--------------//
+        if(col.gameObject.CompareTag("Water"))
+            Water = true;
+        //-----------------------------------------//
+
 
         //--------------------水流に流されるやつ-------------------//
-        if (col.gameObject.CompareTag("Left_Current"))//左
+        if(col.gameObject.CompareTag("Left_Current"))//左
             Current = 2;
         if (col.gameObject.CompareTag("Right_Current"))//右
             Current = -2;
@@ -195,8 +200,11 @@ public class movesample2 : MonoBehaviour
         {
             Hydrated += 5;//だんだん吸水
             if (Hydrated % 4 == 0) Speed -= 0.5f;//だんだん減速
-            yield return new WaitForSeconds(0.5f);
-            if (Soak_On) break;
+            yield return new WaitForSeconds(0.05f);
+            if(Soak_On || Soak_Cancel) {
+                Soak_Cancel = false;
+                break;
+            }
         }
 
         yield break;

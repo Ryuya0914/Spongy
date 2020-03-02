@@ -229,5 +229,6 @@ MonoBehaviour:
   Right: 0
   Under: 0
   Jump: 0
+  Jump_Height: 2.5
   Soak_On: 0
   Water: 0
