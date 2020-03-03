@@ -3,46 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class movesample2 : MonoBehaviour
-{
-    [SerializeField,Header("楽するため")] Rigidbody2D rb;
+public class movesample2 : MonoBehaviour {
+    [SerializeField, Header("楽するため")] Rigidbody2D rb;
     [SerializeField, Header("移動量(乗算)")] float Speed;
-    [SerializeField,Header("水流時移動抵抗量")]float Current;
+    [SerializeField, Header("ジャンプ高さ調整(減算)")] float Jump_Height;
+    [SerializeField, Header("水流時移動抵抗量")] float Current, UaD_Current;
+    [SerializeField, Header("現在の向き保存")] int Quantity;
+    [SerializeField, Header("浮力にしたかった")] float buoyancy;
     [SerializeField, Header("含水量")] int Hydrated;
     [SerializeField, Header("向き管理")] bool Left, Right, Under;
     [SerializeField, Header("ジャンプ管理")] bool Jump;
-    [SerializeField, Header("ジャンプ高さ調整(減算)")] float Jump_Height;
     [SerializeField, Header("吸水管理")] bool Soak_On, Soak_Cancel, Water;
     [SerializeField, Header("UI")] Image Meter;
     [HideInInspector] float xSpeed;
 
-    void Update()
-    {
+    void Update() {
 
         //------------移動処理----------//
-        if (Input.GetKey(KeyCode.A) && !Right)
-        {
-            if(!Under) transform.rotation = Quaternion.AngleAxis(180, new Vector3(0, 1, 0));
+        if(Input.GetKey(KeyCode.A) && !Right) {
+            if(!Under) {
+                Quantity = 180;
+                transform.rotation = Quaternion.AngleAxis(Quantity, new Vector3(0, 1, 0));
+            }
             xSpeed = -Speed;
             Right = false;
             Left = true;
-        }
-        else if (Input.GetKey(KeyCode.D) && !Left)
-        {
-            if(!Under) transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 1, 0));
+        } else if(Input.GetKey(KeyCode.D) && !Left) {
+            if(!Under) {
+                Quantity = 0;
+                transform.rotation = Quaternion.AngleAxis(Quantity, new Vector3(0, 1, 0));
+            }
             xSpeed = Speed;
             Left = false;
             Right = true;
-        }
-        else
-        {
+        } else {
             Left = false;
             Right = false;
             xSpeed = 0;
         }
 
 
-        rb.velocity = new Vector2(xSpeed - Current, rb.velocity.y);
+        rb.velocity = new Vector2(xSpeed - Current, rb.velocity.y - UaD_Current);
         //------------------------------//
 
 
@@ -52,15 +53,15 @@ public class movesample2 : MonoBehaviour
 
 
         //---------------向き切り替え-------------------//
-        if (Input.GetKeyDown(KeyCode.K))//上向く
+        if(Input.GetKeyDown(KeyCode.W))//上向く
         {
             Under = true;
             transform.rotation = Quaternion.AngleAxis(90, new Vector3(0, 0, 1));
         }
-        if (Input.GetKeyUp(KeyCode.K))//元に戻る
+        if(Input.GetKeyUp(KeyCode.W))//元に戻る
         {
             Under = false;
-            transform.rotation = Quaternion.AngleAxis(0, new Vector3(0, 0, 1));
+            transform.rotation = Quaternion.AngleAxis(Quantity, new Vector3(0, 0, 1));
         }
         //-----------------------------------------------//
 
@@ -68,8 +69,7 @@ public class movesample2 : MonoBehaviour
 
 
         //---------------ブースター--------------//
-        if (Input.GetKey(KeyCode.B) && 5 <= Hydrated)
-        {
+        if(Input.GetKey(KeyCode.O) && 5 <= Hydrated) {
             Hydrated -= 5;//吸った水を吐き出す
             Boost();//ブースト実行
         }
@@ -78,23 +78,22 @@ public class movesample2 : MonoBehaviour
 
 
         //-------ジャンプ--------//
-        if (Input.GetKeyDown(KeyCode.Space) && Jump)
-        {
+        if(Input.GetKeyDown(KeyCode.Space) && Jump) {
             Jump = false;
-            rb.AddForce(Vector3.up * (Speed * 3-Jump_Height), ForceMode2D.Impulse);
+            rb.AddForce(Vector3.up * (Speed * 3 - Jump_Height), ForceMode2D.Impulse);
         }
         //--------------------//
 
-        
+
 
 
         //-----------水中にいるとき段々吸水---------------//
-        if (Input.GetKeyDown(KeyCode.P) && Water&&Soak_On)
-        {
+        if(Input.GetKeyDown(KeyCode.P) && Water && Soak_On) {
             StartCoroutine(Soak());
             Soak_On = false;
         }
-        if (Input.GetKeyUp(KeyCode.P)) Soak_On = true;
+        if(Input.GetKeyUp(KeyCode.P))
+            Soak_On = true;
         //------------------------------------------------//
 
 
@@ -106,19 +105,18 @@ public class movesample2 : MonoBehaviour
     }
 
     //-------------------加速システム処理部-----------------------//
-    void Boost()
-    {
-
-
-        if (Hydrated % 4 == 0 && Speed < 5) Speed += 0.5f;//移動量を戻す
+    void Boost() {
 
 
 
-        if (Right)//右
+        Speed += 2.5f / 20f;//だんだん加速
+
+
+        if(Right && !Under)//右
             rb.AddForce(Vector3.right * 20, ForceMode2D.Impulse);
-        if (Left)//左
+        if(Left && !Under)//左
             rb.AddForce(-Vector3.right * 20, ForceMode2D.Impulse);
-        if (Under)//下
+        if(Under)//下
         {
             Under = false;
             rb.AddForce(Vector3.up * 15, ForceMode2D.Impulse);
@@ -131,29 +129,26 @@ public class movesample2 : MonoBehaviour
     void OnTriggerEnter2D(Collider2D col) {
 
         //----------------水中かどうか--------------//
-        if(col.gameObject.CompareTag("Water"))
+        if(col.gameObject.CompareTag("Water") || col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current") || col.gameObject.CompareTag("Fast_Current") || col.gameObject.CompareTag("Low_Current"))
             Soak_Cancel = false;
         //-----------------------------------------//
 
-        //--------------接地しているか-------------//
-        if(col.gameObject.CompareTag("TopGround"))
-            Jump = true;
-        //-----------------------------------------//
 
 
     }
 
 
 
-    void OnTriggerExit2D(Collider2D col)
-    {
+    void OnTriggerExit2D(Collider2D col) {
 
 
 
 
         //--------水流から離れたら移動速度が戻る------//
-        if (col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current"))
+        if(col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current") || col.gameObject.CompareTag("Fast_Current") || col.gameObject.CompareTag("Low_Current")) {
             Current = 0;
+            UaD_Current = 0;
+        }
         //--------------------------------------------//
 
 
@@ -162,7 +157,7 @@ public class movesample2 : MonoBehaviour
 
 
         //-----------水中かどうか-------------//
-        if(col.gameObject.CompareTag("Water")) {
+        if(col.gameObject.CompareTag("Water") || col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current") || col.gameObject.CompareTag("Fast_Current") || col.gameObject.CompareTag("Low_Current")) {
             Water = false;
             Soak_Cancel = true;
         }
@@ -170,10 +165,9 @@ public class movesample2 : MonoBehaviour
     }
 
 
-    void OnTriggerStay2D(Collider2D col)
-    {
+    void OnTriggerStay2D(Collider2D col) {
         //----------------水中かどうか--------------//
-        if(col.gameObject.CompareTag("Water"))
+        if(col.gameObject.CompareTag("Water") || col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current") || col.gameObject.CompareTag("Fast_Current") || col.gameObject.CompareTag("Low_Current"))
             Water = true;
         //-----------------------------------------//
 
@@ -181,9 +175,23 @@ public class movesample2 : MonoBehaviour
         //--------------------水流に流されるやつ-------------------//
         if(col.gameObject.CompareTag("Left_Current"))//左
             Current = 2;
-        if (col.gameObject.CompareTag("Right_Current"))//右
+        if(col.gameObject.CompareTag("Right_Current"))//右
             Current = -2;
+        if(col.gameObject.CompareTag("Fast_Current"))
+            UaD_Current = 5;
+        if(col.gameObject.CompareTag("Low_Current"))
+            UaD_Current = 2;
         //----------------------------------------------------------//
+
+
+
+        //--------------接地しているか-------------//
+        if(col.gameObject.CompareTag("TopGround"))
+            Jump = true;
+        //-----------------------------------------//
+
+
+
     }
 
 
@@ -194,12 +202,11 @@ public class movesample2 : MonoBehaviour
 
 
     //--------水に入っている間水を吸う処理----------//
-    IEnumerator Soak()
-    {
-        while (Hydrated < 100)
-        {
+    IEnumerator Soak() {
+        while(Hydrated < 100) {
             Hydrated += 5;//だんだん吸水
-            if (Hydrated % 4 == 0) Speed -= 0.5f;//だんだん減速
+
+            Speed -= 2.5f / 20f;//だんだん減速
             yield return new WaitForSeconds(0.05f);
             if(Soak_On || Soak_Cancel) {
                 Soak_Cancel = false;

@@ -9,6 +9,8 @@ TagManager:
   - Left_Current
   - Right_Current
   - TopGround
+  - Fast_Current
+  - Low_Current
   layers:
   - Default
   - TransparentFX

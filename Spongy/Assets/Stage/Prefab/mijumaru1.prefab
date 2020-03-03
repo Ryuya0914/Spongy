@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2214552572636904680}
   m_Layer: 4
   m_Name: mizumigi1 (1)
-  m_TagString: Water
+  m_TagString: Fast_Current
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 4227290964798823870}
   m_Layer: 4
   m_Name: mizumigi1
-  m_TagString: Water
+  m_TagString: Fast_Current
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
