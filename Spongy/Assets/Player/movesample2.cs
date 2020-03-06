@@ -24,7 +24,6 @@ public class movesample2 : MonoBehaviour
     [HideInInspector] float xSpeed, Speed_Influence, Speed_Rise, BR, BI, JumpForce_Execution;
     [SerializeField, Header("吸水時移動速度増減量(除算)")] float[] Increase;
 
-
     [Header("水流時移動抵抗量")] float Current, UaD_Current;
     [Header("現在の向き保存")] int Quantity;
 
@@ -71,21 +70,30 @@ public class movesample2 : MonoBehaviour
         //-----------------------------------------------//
 
 
-        //---------------ブースター--------------//
-        if (Input.GetKeyDown(KeyCode.O) && 0 <= Hydrated)
+        //-----------------吸水＆放水--------------//
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            //Boost();//ブースト実行
-            StopAllCoroutines();
-            StartCoroutine(Boost());
+            if (Water && Soak_On)
+            {
+                StartCoroutine(Soak());
+                Soak_On = false;
+            }
+            else if (0 <= Hydrated && Jump)
+            {
+                if (Under || Right || Left)
+                {
+                    StopAllCoroutines();
+                    StartCoroutine(Boost());
+                }
+            }
         }
-
-        if (Input.GetKeyUp(KeyCode.O))
+        if (Input.GetKeyUp(KeyCode.P))
         {
             StopAllCoroutines();
-            StartCoroutine(Boost_Deseletion());
+            Boost_Deseletion();
+            Soak_On = true;
         }
-        //---------------------------------------//
-
+        //-----------------------------------------//
 
 
 
@@ -98,14 +106,26 @@ public class movesample2 : MonoBehaviour
         //--------------------//
 
 
+        ////---------------ブースター--------------//
+        //    if (Input.GetKeyDown(KeyCode.O) && 0 <= Hydrated && Jump)
+        //{
+        //    StopAllCoroutines();
+        //    StartCoroutine(Boost());
+        //}
+        //if (Input.GetKeyUp(KeyCode.O))
+        //{
+        //    Boost_Deseletion();
+        //}
+        //---------------------------------------//
+
         //-----------水中にいるとき段々吸水---------------//
-        if (Input.GetKeyDown(KeyCode.P) && Water && Soak_On)
-        {
-            StartCoroutine(Soak());
-            Soak_On = false;
-        }
-        if (Input.GetKeyUp(KeyCode.P))
-            Soak_On = true;
+        //if (Input.GetKeyDown(KeyCode.P) && Water && Soak_On)
+        //{
+        //    StartCoroutine(Soak());
+        //    Soak_On = false;
+        //}
+        //if (Input.GetKeyUp(KeyCode.P))
+        //    Soak_On = true;
         //------------------------------------------------//
 
         //-----------含水量のUIを更新---------------------//
@@ -127,8 +147,9 @@ public class movesample2 : MonoBehaviour
     {
         xSpeed = Speed * move_speed;
         Speed_Influence = xSpeed + BI - Current;
-        Speed_Rise = rb.velocity.y + BR - UaD_Current;
-        rb.velocity = new Vector2(Speed_Influence, Speed_Rise + JumpForce_Execution);
+        Speed_Rise = rb.velocity.y + BR - UaD_Current + JumpForce_Execution;
+        if (rb.velocity.y < 10)
+            rb.velocity = new Vector2(Speed_Influence, Speed_Rise);
     }
     //--------------------------------------------------------//
 
@@ -145,7 +166,7 @@ public class movesample2 : MonoBehaviour
     //-------------------------------------------//
 
 
-    //-------------------加速システム処理部-----------------------//
+    //------------加速システム処理部----------------//
     IEnumerator Boost()
     {
         while (Hydrated > 0)
@@ -156,44 +177,22 @@ public class movesample2 : MonoBehaviour
 
             if (Right && !Under)//右
                 BI += Boost_Influence;
-            ////rb.AddForce(Vector3.right * 20, ForceMode2D.Impulse);
             if (Left && !Under)//左
                 BI -= Boost_Influence;
-            //rb.AddForce(-Vector3.right * 20, ForceMode2D.Impulse);
             if (Under && BR < Boost_Limit)//下
-                BR += Boost_Rise;
+                BR = Boost_Rise + 0.2f;
             yield return new WaitForSeconds(Boost_Wait);
         }
-        StartCoroutine(Boost_Deseletion());
-        StopCoroutine(Boost());
+        Boost_Deseletion();
+        yield break;
     }
     //-------------------------------------------------------------//
 
-    //---------------ブーストキャンセル処理?----------//
-    IEnumerator Boost_Deseletion()
+    //----------ブーストキャンセル処理?----------//
+    void Boost_Deseletion()
     {
-        while (0 < BR)
-        {
-            BR -= Boost_Rise * 2;
-            if (BR < 0)
-                yield break;
-            yield return null;
-        }
-        while (0 < BI)
-        {
-            BI -= Boost_Influence;
-            if (BI < 0)
-                yield break;
-            yield return null;
-        }
-        while (0 > BI)
-        {
-            BI += Boost_Influence;
-            if (BI > 0)
-                yield break;
-            yield return null;
-        }
-
+        BR = 0;
+        BI = 0;
     }
     //------------------------------------------------//
 
@@ -217,6 +216,11 @@ public class movesample2 : MonoBehaviour
     }
     //----------------------------------------------//
 
+
+   public int Hydrated_check()
+    {
+        return (int)Hydrated;
+    }
 
     void OnTriggerEnter2D(Collider2D col)
     {
