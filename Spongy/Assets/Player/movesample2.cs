@@ -254,6 +254,12 @@ public class movesample2 : MonoBehaviour
             Soak_Cancel = true;
         }
         //------------------------------------//
+
+        //--------------接地しているか-------------//
+        if(col.gameObject.CompareTag("TopGround")) {
+            Jump = false;
+        }
+        //-----------------------------------------//
     }
 
 

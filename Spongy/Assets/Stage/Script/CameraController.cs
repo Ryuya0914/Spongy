@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] GameObject player;
-    float speed = 0.5f;                     // カメラが動く最大速度
+    float speed = 0.8f;                     // カメラが動く最大速度
     float H = 6.0f;                         // カメラの縦の長さ
     float W = 10.0f;                         // カメラの横の長さ
     Vector3 vec = new Vector3(0, 0, 0);
