@@ -77,6 +77,11 @@ public class movesample2 : MonoBehaviour
             {
                 StartCoroutine(Soak());
                 Soak_On = false;
+                if (Under || Right || Left)
+                {
+                    StopAllCoroutines();
+                    StartCoroutine(Boost());
+                }
             }
             else if (0 <= Hydrated && Jump)
             {
