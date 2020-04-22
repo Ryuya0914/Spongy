@@ -71,7 +71,7 @@ public class movesample2 : MonoBehaviour
 
 
         //-----------------吸水＆放水--------------//
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             if (Water && Soak_On)
             {
@@ -83,7 +83,7 @@ public class movesample2 : MonoBehaviour
                     StartCoroutine(Boost());
                 }
             }
-            else if (0 <= Hydrated && Jump)
+            else if (0 <= Hydrated)
             {
                 if (Under || Right || Left)
                 {
@@ -92,7 +92,7 @@ public class movesample2 : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKeyUp(KeyCode.P))
+        if (Input.GetKeyUp(KeyCode.J))
         {
             StopAllCoroutines();
             Boost_Deseletion();
@@ -209,7 +209,7 @@ public class movesample2 : MonoBehaviour
             Hydrated += Water_Fluctuation;//だんだん吸水
 
             Speed -= Increase[0] / Increase[1];//だんだん減速
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
             if (Soak_On || Soak_Cancel)
             {
                 Soak_Cancel = false;
