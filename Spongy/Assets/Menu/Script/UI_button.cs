@@ -9,14 +9,12 @@ using UnityEngine.SceneManagement;
 
 public class UI_button : MonoBehaviour
 {
-    //public string str;
-    //public void Coment() {
-    //    Debug.Log(str);
-    //}
 
     [SerializeField] string NextSceneName;  // 次のシーンの名前
     [SerializeField] GameObject MenuObj;    // 閉じたいメニューを格納
     [SerializeField] int nextState;         // ボタンを押した後のゲームの状態
+    [SerializeField] TimeCounter _tCounter; // 時間を数えるかどうかを切り替えるスクリプト
+
 
     // シーン読み込み
     public void SceneChange() {
@@ -30,14 +28,16 @@ public class UI_button : MonoBehaviour
     }
 
 
-    // ポーズメニューを閉じる (gameシーンから)
+    // ポーズメニューを閉じる
     public void ExitMenu() {
+        _tCounter.SetCountFlag = true;
         GameRoot.State = nextState;
         MenuObj.SetActive(false);
     }
 
     // メニューを開く
     public void OpenMenu() {
+        _tCounter.SetCountFlag = false;
         MenuObj.SetActive(true);
     }
 
