@@ -197,14 +197,9 @@ public class movesample2 : MonoBehaviour
         while (Hydrated < 100)
         {
             Hydrated += Water_Fluctuation;//だんだん吸水
-<<<<<<< HEAD
 
-            Speed -= Increase[0] / Increase[1];//だんだん減速
-            yield return new WaitForSeconds(0.05f);
-=======
             Speed = 5 - 2.5f * (Hydrated / 100);
             yield return new WaitForSeconds(0.1f);
->>>>>>> aa
             if (Soak_On || Soak_Cancel)
             {
                 Soak_Cancel = false;
