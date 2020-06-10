@@ -199,7 +199,7 @@ public class movesample2 : MonoBehaviour
             Hydrated += Water_Fluctuation;//だんだん吸水
 
             Speed = 5 - 2.5f * (Hydrated / 100);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.03f);
             if (Soak_On || Soak_Cancel)
             {
                 Soak_Cancel = false;
