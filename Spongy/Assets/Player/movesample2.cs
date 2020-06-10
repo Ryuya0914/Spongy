@@ -260,16 +260,16 @@ public class movesample2 : MonoBehaviour
             Water = true;
         //-----------------------------------------//
 
-        //--------------------水流に流されるやつ-------------------//
-        if (col.gameObject.CompareTag("Left_Current"))//左
-            Current = 2;
-        if (col.gameObject.CompareTag("Right_Current"))//右
-            Current = -2;
-        if (col.gameObject.CompareTag("Fast_Current"))
-            UaD_Current = 5;
-        if (col.gameObject.CompareTag("Low_Current"))
-            UaD_Current = 2;
-        //----------------------------------------------------------//
+        ////--------------------水流に流されるやつ-------------------//
+        //if (col.gameObject.CompareTag("Left_Current"))//左
+        //    Current = 2;
+        //if (col.gameObject.CompareTag("Right_Current"))//右
+        //    Current = -2;
+        //if (col.gameObject.CompareTag("Fast_Current"))
+        //    UaD_Current = 5;
+        //if (col.gameObject.CompareTag("Low_Current"))
+        //    UaD_Current = 2;
+        ////----------------------------------------------------------//
 
         //--------------接地しているか-------------//
         if (col.gameObject.CompareTag("TopGround"))
