@@ -44,7 +44,11 @@ public class UI_button : MonoBehaviour
 
     // ゲーム終了 (titleから)
     public void EndGame() {
-
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
     
 
