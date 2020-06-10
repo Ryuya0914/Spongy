@@ -22,25 +22,26 @@ public class movesample2 : MonoBehaviour
     [SerializeField, Header("吸水管理")] bool Soak_On, Soak_Cancel, Water;
     [SerializeField, Header("UI")] Image Meter;
     [HideInInspector] float xSpeed, Speed_Influence, Speed_Rise, BR, BI, JumpForce_Execution;
-    [SerializeField, Header("吸水時移動速度増減量(除算)")] float[] Increase;
-
+    [SerializeField] Color a;
     [Header("水流時移動抵抗量")] float Current, UaD_Current;
     [Header("現在の向き保存")] int Quantity;
 
     void Update()
     {
+        gameObject.GetComponent<SpriteRenderer>().color = a * Hydrated / 100;
 
         //------------移動処理----------//
         if (Input.GetKey(KeyCode.A) && !Right)
         {
-            if (!Under) Rotate(180);
+            if (!Under) Rotate(0);
+
             Move(-1);
             Left = true;
             Right = false;
         }
         else if (Input.GetKey(KeyCode.D) && !Left)
         {
-            if (!Under) Rotate(0);
+            if (!Under) Rotate(180);
             Move(1);
             Left = false;
             Right = true;
@@ -60,12 +61,12 @@ public class movesample2 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))//上向く
         {
             Under = true;
-            transform.rotation = Quaternion.AngleAxis(90, new Vector3(0, 0, 1));
+            transform.Rotate(0, 0, -90);
         }
         if (Input.GetKeyUp(KeyCode.W))//元に戻る
         {
             Under = false;
-            transform.rotation = Quaternion.AngleAxis(Quantity, new Vector3(0, 0, 1));
+            transform.Rotate(0, 0, 90);
         }
         //-----------------------------------------------//
 
@@ -123,20 +124,9 @@ public class movesample2 : MonoBehaviour
         //}
         //---------------------------------------//
 
-        //-----------水中にいるとき段々吸水---------------//
-        //if (Input.GetKeyDown(KeyCode.P) && Water && Soak_On)
-        //{
-        //    StartCoroutine(Soak());
-        //    Soak_On = false;
-        //}
-        //if (Input.GetKeyUp(KeyCode.P))
-        //    Soak_On = true;
-        //------------------------------------------------//
-
         //-----------含水量のUIを更新---------------------//
         Meter.fillAmount = Hydrated / 100f;
         //------------------------------------------------//
-
     }
 
     //-----------左右反転-------------//
@@ -176,7 +166,7 @@ public class movesample2 : MonoBehaviour
     {
         while (Hydrated > 0)
         {
-            Speed += Increase[0] / Increase[1];//だんだん加速
+            Speed = (2.5f+2.5f*(100-Hydrated)/100)+0.05f;
 
             Hydrated -= Water_Fluctuation;//吸った水を吐き出す
 
@@ -207,9 +197,14 @@ public class movesample2 : MonoBehaviour
         while (Hydrated < 100)
         {
             Hydrated += Water_Fluctuation;//だんだん吸水
+<<<<<<< HEAD
 
             Speed -= Increase[0] / Increase[1];//だんだん減速
             yield return new WaitForSeconds(0.05f);
+=======
+            Speed = 5 - 2.5f * (Hydrated / 100);
+            yield return new WaitForSeconds(0.1f);
+>>>>>>> aa
             if (Soak_On || Soak_Cancel)
             {
                 Soak_Cancel = false;
