@@ -24,6 +24,7 @@ public class movesample2 : MonoBehaviour
     [HideInInspector] float xSpeed, Speed_Influence, Speed_Rise, BR, BI, JumpForce_Execution;
     [SerializeField] Color a;
     [Header("現在の向き保存")] int Quantity;
+    [SerializeField] ParticleSystem particle;
     void Start()
     {
         Dif_Speed = Max_Speed - Min_Speed;
@@ -164,8 +165,10 @@ public class movesample2 : MonoBehaviour
     //------------加速システム処理部----------------//
     IEnumerator Boost()
     {
+        particle.Play();
         while (Hydrated > 0)
         {
+
             Max_Speed = (Min_Speed + Dif_Speed * (100 - Hydrated) / 100) + (Dif_Speed / 50);
 
             Hydrated -= Water_Fluctuation;//吸った水を吐き出す
@@ -187,6 +190,7 @@ public class movesample2 : MonoBehaviour
     void Boost_Deseletion()
     {
         BR = BI = 0;
+        particle.Stop();
     }
     //------------------------------------------------//
 

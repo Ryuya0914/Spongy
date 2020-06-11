@@ -9453,6 +9453,16 @@ PrefabInstance:
       propertyPath: Boost_Influence
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3993717433255508522, guid: 75ed1dc58f807d24abc8a90b91e46770,
+        type: 3}
+      propertyPath: Max_Speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3993717433255508522, guid: 75ed1dc58f807d24abc8a90b91e46770,
+        type: 3}
+      propertyPath: Min_Speed
+      value: 3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8506114100762999003, guid: 75ed1dc58f807d24abc8a90b91e46770,
         type: 3}
       propertyPath: m_LocalPosition.x
