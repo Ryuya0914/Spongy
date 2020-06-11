@@ -15,7 +15,7 @@ public class TimeCounter : MonoBehaviour
     void Update() {
         if(CountFlag) {             // 時間カウントしていい？
             timer += Time.deltaTime;                    // 時間をタイマーに加算する
-            text_time.text = timer.ToString("000.00");   // 画面に時間を表示
+            text_time.text = timer.ToString("0000.0");   // 画面に時間を表示
         }
     }
 
