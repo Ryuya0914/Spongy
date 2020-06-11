@@ -10,6 +10,7 @@ public class mizu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         huryoku = GetComponent<BuoyancyEffector2D>();
     }
 

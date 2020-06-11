@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 839140879049477709}
   - component: {fileID: 3118619902616637997}
   - component: {fileID: 2214552572636904680}
+  - component: {fileID: 9076485418039893133}
   m_Layer: 4
   m_Name: mizumigi1 (1)
   m_TagString: Fast_Current
@@ -46,6 +47,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -57,6 +59,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -91,7 +94,7 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -106,6 +109,25 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 15, y: 10.51}
   m_EdgeRadius: 0
+--- !u!253 &9076485418039893133
+BuoyancyEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700118837957524152}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_SurfaceLevel: 0
+  m_Density: 0
+  m_LinearDrag: 2
+  m_AngularDrag: 5
+  m_FlowAngle: -90
+  m_FlowMagnitude: 20
+  m_FlowVariation: 0
 --- !u!1 &2091694815896073218
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,6 +139,7 @@ GameObject:
   - component: {fileID: 9034556026081577717}
   - component: {fileID: 710570317159412781}
   - component: {fileID: 4227290964798823870}
+  - component: {fileID: 1099785249788175795}
   m_Layer: 4
   m_Name: mizumigi1
   m_TagString: Fast_Current
@@ -152,6 +175,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -163,6 +187,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -197,7 +222,7 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -212,6 +237,25 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 15, y: 10.51}
   m_EdgeRadius: 0
+--- !u!253 &1099785249788175795
+BuoyancyEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091694815896073218}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_SurfaceLevel: 0
+  m_Density: 0
+  m_LinearDrag: 2
+  m_AngularDrag: 5
+  m_FlowAngle: -90
+  m_FlowMagnitude: 20
+  m_FlowVariation: 0
 --- !u!1 &5554824716637507404
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,6 +303,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -270,6 +315,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
