@@ -14562,12 +14562,12 @@ PrefabInstance:
     - target: {fileID: 1099785249788175795, guid: 74a3b6a0c5f655e4fb29767fdd4adc73,
         type: 3}
       propertyPath: m_FlowMagnitude
-      value: 200
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1099785249788175795, guid: 74a3b6a0c5f655e4fb29767fdd4adc73,
         type: 3}
       propertyPath: m_FlowAngle
-      value: 90
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 5403040619842973414, guid: 74a3b6a0c5f655e4fb29767fdd4adc73,
         type: 3}
