@@ -6,40 +6,42 @@ using UnityEngine.UI;
 public class movesample2 : MonoBehaviour
 {
     [SerializeField, Header("楽するため")] Rigidbody2D rb;
-    [SerializeField, Header("移動量(乗算)")] float Speed;
+    [SerializeField, Header("移動量(最大値)")] float Max_Speed;
+    [SerializeField, Header("移動量(最低値)")] float Min_Speed;
+    [SerializeField, Header("移動量(差)確認用")] float Dif_Speed;
     [SerializeField, Header("ジャンプ高さ調整(加算)")] float Jump_Height;
     [SerializeField, Header("ブースト加速量(左右)")] float Boost_Influence;
     [SerializeField, Header("ブースト加速量(上)")] float Boost_Rise;
-    [SerializeField, Header("ブースト速度制限")] float Boost_Limit;
     [SerializeField, Header("吸水の増減量")] float Water_Fluctuation;
     [SerializeField, Header("含水量")] float Hydrated;
     [SerializeField, Header("ブーストの実行間隔")] float Boost_Wait;
     [SerializeField, Header("向き管理")] bool Left, Right, Under;
     [SerializeField, Header("ジャンプ管理")] bool Jump;
     [SerializeField, Header("ジャンプ力")] float JumpForce;
-    [SerializeField, Header("ジャンプ力差分(乗算)")] float JumpDifference;
     [SerializeField, Header("ジャンプ時滞空時間？落下開始までの時間？")] float JumpFlight;
     [SerializeField, Header("吸水管理")] bool Soak_On, Soak_Cancel, Water;
     [SerializeField, Header("UI")] Image Meter;
     [HideInInspector] float xSpeed, Speed_Influence, Speed_Rise, BR, BI, JumpForce_Execution;
     [SerializeField] Color a;
-    [Header("水流時移動抵抗量")] float Current, UaD_Current;
     [Header("現在の向き保存")] int Quantity;
+    void Start()
+    {
+        Dif_Speed = Max_Speed - Min_Speed;
+    }
 
     void Update()
     {
         gameObject.GetComponent<SpriteRenderer>().color = a * Hydrated / 100;
 
         //------------移動処理----------//
-        if (Input.GetKey(KeyCode.A) && !Right)
+        if (Input.GetKey(KeyCode.Q) && !Right)
         {
             if (!Under) Rotate(0);
-
             Move(-1);
             Left = true;
             Right = false;
         }
-        else if (Input.GetKey(KeyCode.D) && !Left)
+        else if (Input.GetKey(KeyCode.E) && !Left)
         {
             if (!Under) Rotate(180);
             Move(1);
@@ -48,14 +50,10 @@ public class movesample2 : MonoBehaviour
         }
         else
         {
-            Left = false;
-            Right = false;
+            Left =Right= false;
             Move(0);
-
         }
         //------------------------------//
-
-
 
         //---------------向き切り替え-------------------//
         if (Input.GetKeyDown(KeyCode.W))//上向く
@@ -74,6 +72,7 @@ public class movesample2 : MonoBehaviour
         //-----------------吸水＆放水--------------//
         if (Input.GetKeyDown(KeyCode.J))
         {
+            StopAllCoroutines();
             if (Water && Soak_On)
             {
                 StartCoroutine(Soak());
@@ -113,7 +112,7 @@ public class movesample2 : MonoBehaviour
 
 
         ////---------------ブースター--------------//
-        //    if (Input.GetKeyDown(KeyCode.O) && 0 <= Hydrated && Jump)
+        //if (Input.GetKeyDown(KeyCode.O) && 0 <= Hydrated && Jump)
         //{
         //    StopAllCoroutines();
         //    StartCoroutine(Boost());
@@ -122,7 +121,7 @@ public class movesample2 : MonoBehaviour
         //{
         //    Boost_Deseletion();
         //}
-        //---------------------------------------//
+        ////---------------------------------------//
 
         //-----------含水量のUIを更新---------------------//
         Meter.fillAmount = Hydrated / 100f;
@@ -140,9 +139,9 @@ public class movesample2 : MonoBehaviour
     //--------------------移動処理---------------------//
     void Move(int move_speed)
     {
-        xSpeed = Speed * move_speed;
-        Speed_Influence = xSpeed + BI - Current;
-        Speed_Rise = rb.velocity.y + BR - UaD_Current + JumpForce_Execution;
+        xSpeed = Max_Speed * move_speed;
+        Speed_Influence = xSpeed + BI;
+        Speed_Rise = rb.velocity.y + BR + JumpForce_Execution;
         if (rb.velocity.y < 10)
             rb.velocity = new Vector2(Speed_Influence, Speed_Rise);
     }
@@ -151,9 +150,10 @@ public class movesample2 : MonoBehaviour
     //---------------ジャンプ処理部---------------//
     IEnumerator Jump2()
     {
+        
         rb.AddForce(Vector3.up * (Jump_Height - (4 * Hydrated / 100)), ForceMode2D.Impulse);
         yield return new WaitForSeconds(JumpFlight);
-        JumpForce_Execution = JumpForce * (1 + Hydrated / 100);
+        JumpForce_Execution = JumpForce *(1 + Hydrated / 100);
         yield return new WaitForSeconds(JumpFlight / (1 + Hydrated / 100));
         JumpForce_Execution = 0;
         yield break;
@@ -166,16 +166,16 @@ public class movesample2 : MonoBehaviour
     {
         while (Hydrated > 0)
         {
-            Speed = (2.5f+2.5f*(100-Hydrated)/100)+0.05f;
+            Max_Speed = (Min_Speed + Dif_Speed * (100 - Hydrated) / 100) + (Dif_Speed / 50);
 
             Hydrated -= Water_Fluctuation;//吸った水を吐き出す
 
             if (Right && !Under)//右
-                BI += Boost_Influence;
+                BI = Boost_Influence;
             if (Left && !Under)//左
-                BI -= Boost_Influence;
-            if (Under && BR < Boost_Limit)//下
-                BR = Boost_Rise + 0.2f;
+                BI = -Boost_Influence;
+            if (Under)//上
+                BR += Boost_Rise;
             yield return new WaitForSeconds(Boost_Wait);
         }
         Boost_Deseletion();
@@ -183,11 +183,10 @@ public class movesample2 : MonoBehaviour
     }
     //-------------------------------------------------------------//
 
-    //----------ブーストキャンセル処理?----------//
+    ////----------ブーストキャンセル処理?----------//
     void Boost_Deseletion()
     {
-        BR = 0;
-        BI = 0;
+        BR = BI = 0;
     }
     //------------------------------------------------//
 
@@ -198,7 +197,7 @@ public class movesample2 : MonoBehaviour
         {
             Hydrated += Water_Fluctuation;//だんだん吸水
 
-            Speed = 5 - 2.5f * (Hydrated / 100);
+            Max_Speed = 5 - Dif_Speed * (Hydrated / 100);
             yield return new WaitForSeconds(0.03f);
             if (Soak_On || Soak_Cancel)
             {
@@ -212,7 +211,7 @@ public class movesample2 : MonoBehaviour
     //----------------------------------------------//
 
 
-   public int Hydrated_check()
+    public int Hydrated_check()
     {
         return (int)Hydrated;
     }
@@ -229,13 +228,6 @@ public class movesample2 : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D col)
     {
-        //--------水流から離れたら移動速度が戻る------//
-        if (col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current") || col.gameObject.CompareTag("Fast_Current") || col.gameObject.CompareTag("Low_Current"))
-        {
-            Current = 0;
-            UaD_Current = 0;
-        }
-        //--------------------------------------------//
 
         //-----------水中かどうか-------------//
         if (col.gameObject.CompareTag("Water") || col.gameObject.CompareTag("Left_Current") || col.gameObject.CompareTag("Right_Current") || col.gameObject.CompareTag("Fast_Current") || col.gameObject.CompareTag("Low_Current"))
@@ -246,9 +238,8 @@ public class movesample2 : MonoBehaviour
         //------------------------------------//
 
         //--------------接地しているか-------------//
-        if(col.gameObject.CompareTag("TopGround")) {
+        if (col.gameObject.CompareTag("TopGround"))
             Jump = false;
-        }
         //-----------------------------------------//
     }
 
@@ -260,22 +251,10 @@ public class movesample2 : MonoBehaviour
             Water = true;
         //-----------------------------------------//
 
-        ////--------------------水流に流されるやつ-------------------//
-        //if (col.gameObject.CompareTag("Left_Current"))//左
-        //    Current = 2;
-        //if (col.gameObject.CompareTag("Right_Current"))//右
-        //    Current = -2;
-        //if (col.gameObject.CompareTag("Fast_Current"))
-        //    UaD_Current = 5;
-        //if (col.gameObject.CompareTag("Low_Current"))
-        //    UaD_Current = 2;
-        ////----------------------------------------------------------//
 
         //--------------接地しているか-------------//
         if (col.gameObject.CompareTag("TopGround"))
-        {
             Jump = true;
-        }
         //-----------------------------------------//
     }
 }
