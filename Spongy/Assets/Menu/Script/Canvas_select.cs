@@ -41,7 +41,7 @@ public class Canvas_select : MonoBehaviour
             NowNum = (NowNum > count) ? 0 : NowNum;
             animator[NowNum].CrossFade("popup", 0.4f);
 
-        } else if(Input.GetKeyDown(KeyCode.Space)) {    // spaceで決定
+        } else if(Input.GetKeyDown(KeyCode.Return)) {    // spaceで決定
             btns[NowNum].onClick.Invoke();  // unityのinspectorで紐付けしたメソッドを呼び出す
         }
     }
