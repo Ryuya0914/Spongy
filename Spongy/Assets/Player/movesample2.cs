@@ -24,6 +24,8 @@ public class movesample2 : MonoBehaviour
     [HideInInspector] float xSpeed, Speed_Influence, Speed_Rise, BR, BI, JumpForce_Execution;
     [SerializeField] Color a;
     [Header("現在の向き保存")] int Quantity;
+    [SerializeField] AudioSource mizu_dasu;
+    [SerializeField] AudioSource mizu_hukumu;
     [SerializeField] ParticleSystem particle;
     void Start()
     {
@@ -95,6 +97,8 @@ public class movesample2 : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.J))
         {
+            mizu_hukumu.Stop();
+            mizu_dasu.Stop();
             StopAllCoroutines();
             Boost_Deseletion();
             Soak_On = true;
@@ -166,6 +170,7 @@ public class movesample2 : MonoBehaviour
     IEnumerator Boost()
     {
         particle.Play();
+        mizu_dasu.Play();
         while (Hydrated > 0)
         {
 
@@ -191,12 +196,14 @@ public class movesample2 : MonoBehaviour
     {
         BR = BI = 0;
         particle.Stop();
+        mizu_dasu.Stop();
     }
     //------------------------------------------------//
 
     //--------水に入っている間水を吸う処理----------//
     IEnumerator Soak()
     {
+        mizu_hukumu.Play();
         while (Hydrated < 100)
         {
             Hydrated += Water_Fluctuation;//だんだん吸水
