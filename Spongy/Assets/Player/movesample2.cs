@@ -203,9 +203,10 @@ public class movesample2 : MonoBehaviour
     //--------水に入っている間水を吸う処理----------//
     IEnumerator Soak()
     {
-        mizu_hukumu.Play();
         while (Hydrated < 100)
         {
+            mizu_hukumu.Play();
+
             Hydrated += Water_Fluctuation;//だんだん吸水
 
             Max_Speed = 5 - Dif_Speed * (Hydrated / 100);
