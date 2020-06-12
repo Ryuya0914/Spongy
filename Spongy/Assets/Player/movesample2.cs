@@ -37,14 +37,14 @@ public class movesample2 : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = a * Hydrated / 100;
 
         //------------移動処理----------//
-        if (Input.GetKey(KeyCode.Q) && !Right)
+        if (Input.GetKey(KeyCode.A) && !Right)
         {
             if (!Under) Rotate(0);
             Move(-1);
             Left = true;
             Right = false;
         }
-        else if (Input.GetKey(KeyCode.E) && !Left)
+        else if (Input.GetKey(KeyCode.D) && !Left)
         {
             if (!Under) Rotate(180);
             Move(1);
