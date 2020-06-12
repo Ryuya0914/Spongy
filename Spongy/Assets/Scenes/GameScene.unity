@@ -7393,6 +7393,11 @@ PrefabInstance:
       propertyPath: m_FlowMagnitude
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7026675890550034139, guid: 27b6eb7e992f197458a82d7714354c3b,
+        type: 3}
+      propertyPath: m_SurfaceLevel
+      value: 4.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8547105425484522854, guid: 27b6eb7e992f197458a82d7714354c3b,
         type: 3}
       propertyPath: m_LocalPosition.x
