@@ -1955,6 +1955,16 @@ PrefabInstance:
       propertyPath: m_FlowMagnitude
       value: 18
       objectReference: {fileID: 0}
+    - target: {fileID: 7026675890550034139, guid: 27b6eb7e992f197458a82d7714354c3b,
+        type: 3}
+      propertyPath: m_LinearDrag
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7026675890550034139, guid: 27b6eb7e992f197458a82d7714354c3b,
+        type: 3}
+      propertyPath: m_SurfaceLevel
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8547105425484522854, guid: 27b6eb7e992f197458a82d7714354c3b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3091,12 +3101,12 @@ PrefabInstance:
     - target: {fileID: 1428162711368912797, guid: b61cab2273d89b449b5dfd21139c93b1,
         type: 3}
       propertyPath: m_Size.y
-      value: 1150
+      value: 1363
       objectReference: {fileID: 0}
     - target: {fileID: 1428162711368912797, guid: b61cab2273d89b449b5dfd21139c93b1,
         type: 3}
       propertyPath: m_Size.x
-      value: 160
+      value: 340.59
       objectReference: {fileID: 0}
     - target: {fileID: 5075441424322273134, guid: b61cab2273d89b449b5dfd21139c93b1,
         type: 3}
